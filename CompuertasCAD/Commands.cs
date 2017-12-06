@@ -157,6 +157,22 @@ namespace AutoCADAPI.Lab3
             }
         }
         /// <summary>
+        /// Define un comando que prueba la inserción de la compuerta NOR
+        /// </summary>
+        [CommandMethod("InsertNOT")]
+        public void InsertNOT()
+        {
+            if (Compuertas == null)
+                Compuertas = new Dictionary<Handle, Compuerta>();
+            Point3d pt;
+            if (Selector.Point("Selecciona el punto de inserción de la compuerta", out pt))
+            {
+                TransactionWrapper tr = new TransactionWrapper();
+                var cmp = tr.Run(InsertCompuertaTask, new NOT(), pt) as Compuerta;
+                Compuertas.Add(cmp.Id, cmp);
+            }
+        }
+        /// <summary>
         /// Define la transacción que inserta una compuerta
         /// </summary>
         /// <param name="doc">El documento activo.</param>

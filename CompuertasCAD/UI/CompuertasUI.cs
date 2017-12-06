@@ -18,6 +18,9 @@ namespace AutoCADAPI.Lab3.UI
         public CompuertasUI()
         {
             InitializeComponent();
+
+            AutoScrollMinSize = new Size(0, 1);
+            AutoScroll = true;
         }
 
         private void button1_Click(object sender, EventArgs e)

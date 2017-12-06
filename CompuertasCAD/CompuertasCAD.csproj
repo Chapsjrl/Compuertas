@@ -76,6 +76,7 @@
     <Compile Include="Model\InputValue.cs" />
     <Compile Include="Model\NAND.cs" />
     <Compile Include="Model\NOR.cs" />
+    <Compile Include="Model\NOT.cs" />
     <Compile Include="Model\OR.cs" />
     <Compile Include="Model\Pulso.cs" />
     <Compile Include="Model\XNOR.cs" />
@@ -93,10 +94,6 @@
     <Compile Include="UI\CompuertasUI.Designer.cs">
       <DependentUpon>CompuertasUI.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Gallery.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\Gallery.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -106,7 +103,6 @@
     <EmbeddedResource Include="UI\CompuertasUI.resx">
       <DependentUpon>CompuertasUI.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Gallery.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Blocks\AND.dwg">
