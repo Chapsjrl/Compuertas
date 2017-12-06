@@ -10,11 +10,52 @@ using System.Threading.Tasks;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Windows;
+using AutoCADAPI.Lab3.UI;
+using AutoCADAPI.Lab3.Controller;
 
 namespace AutoCADAPI.Lab3
 {
     public class Commands
     {
+        PaletteSet compuertasSet;
+        public static CompuertasUI myControlCompuertas;
+        
+        [CommandMethod("TestInitUI")]
+        public void TestUI()
+        {
+            //inicializa la interfaz
+            compuertasSet = new PaletteSet("Compuertas");
+            myControlCompuertas = new CompuertasUI();
+            compuertasSet.Add("Galería", myControlCompuertas);
+            compuertasSet.Dock = DockSides.Left;
+            compuertasSet.Visible = true;
+        } 
+
+        [CommandMethod("TestDictionary")]
+        public void Dictionary()
+        {
+            ObjectId obj;
+            if(Selector.Entity("Selecciona una entidad", out obj))
+            {
+                TransactionWrapper tr = new TransactionWrapper();
+                tr.Run(DictionaryTask, obj);
+            }
+        }
+
+        private object DictionaryTask(Document doc, Transaction tr, object[] input)
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            Entity ent = ((ObjectId)input[0]).GetObject(OpenMode.ForRead) as Entity;
+            DictionaryManager man = new DictionaryManager();
+            //Abrimos el diccionario
+            var extD = man.GetExtensionD(tr, doc, ent);
+            man.SetData(extD, tr, "Prueba", "Chaps", DateTime.Now.ToShortDateString());
+            var data = man.GetData(extD, tr, "Prueba");
+            ed.WriteMessage("Nombre: {0}, Fecha de Registro: {1}", data[0], data[1]);
+            return null;
+        }
+
         /// <summary>
         /// Las compuertas insertadas en el plano
         /// </summary>
@@ -132,7 +173,7 @@ namespace AutoCADAPI.Lab3
         /// <summary>
         /// Realiza el calculo de una compuerta
         /// </summary>
-        [CommandMethod("TestCompuerta")]
+        //[CommandMethod("TestCompuerta")]
         public void TestCompuerta()
         {
             ObjectId p1Id, p2Id, cmpId;

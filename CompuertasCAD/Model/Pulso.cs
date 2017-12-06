@@ -89,34 +89,37 @@ namespace AutoCADAPI.Lab3.Model
             return d.Ids.OfType<ObjectId>().FirstOrDefault();
         }
 
-        public static void Connect(Transaction tr, Document doc, Dictionary <Handle, Compuerta> compuertas)
+        public static void Connect(Transaction tr, Document doc, Dictionary<Handle, Compuerta> compuertas)
         {
             ObjectId pulsoId, cmpId;
-            Point3d cmpContact;
+            Point3d connPoint;
             if (Selector.Entity("Selecciona un pulso", typeof(Polyline), out pulsoId) &&
-                Selector.Entity("Selecciona la compuerta a conectar el pulso", out cmpId, out cmpContact))
+                Selector.Entity("Selecciona la compuerta a conectar el pulso", out cmpId, out connPoint))
             {
-                Cable cable;
+                Cable c;
+                //Extraer información del pulso
                 Polyline pl = pulsoId.GetObject(OpenMode.ForRead) as Polyline;
                 Boolean[] data = Pulso.GetValues(pl);
                 Point3d start = pl.EndPoint;
-                //Extraer informacion de compuerta
+                //Extraer información de la compuerta
                 Compuerta cmp = compuertas.Values.FirstOrDefault(x => x.Block.Id == cmpId);
                 if (cmp != null)
                 {
                     String name;
                     Point3dCollection zone;
-                    cmp.GetZone(cmpContact, out name, out zone);
-                    //Obtencion del punto de conexion
+                    cmp.GetZone(connPoint, out name, out zone);
+                    //Obtención del punto de conexión
                     if (cmp.ConnectionPoints.ContainsKey(name))
                     {
                         Point3d end = cmp.ConnectionPoints[name];
                         Drawer d = new Drawer(tr);
-                        cable = Cable.InsertCable(start, end, d);
-                        cable.SetData(tr, doc, data);
+                        c = Cable.InsertCable(start, end, d);
+                        c.SetData(tr, doc, data);
                     }
                 }
             }
         }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoCADAPI.Lab2;
+﻿using AutoCADAPI;
+using AutoCADAPI.Lab2;
 using AutoCADAPI.Lab3.Controller;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -163,10 +164,15 @@ namespace AutoCADAPI.Lab3.Model
 
         public ObjectIdCollection Search(String zona)
         {
-            //Nota: debemos aseguar que las cajas sean actuales.
-            //En caso de mover la compuerta no coincidiran a menos que ejecutemos la funcion InitBox
-            Point3d contactPt = this.ConnectionPoints.ContainsKey(zona) ? this.ConnectionPoints[zona] : new Point3d();
-            return contactPt.Select();
+            //Nota deben asegurarse de que las cajas sean actuales.
+            //En caso de mover la compuerta no coincidiran a menos que ejecuten la función InitBox
+            Point3d connPoint = this.ConnectionPoints.ContainsKey(zona) ? this.ConnectionPoints[zona] : new Point3d();
+            ObjectIdCollection res = connPoint.Select();
+            //Debemos ignorar esta instancia de la selección
+            res.Remove(this.Block.ObjectId);
+            return res;
         }
+
+
     }
 }

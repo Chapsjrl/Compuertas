@@ -19,13 +19,16 @@ namespace AutoCADAPI.Lab3
         {
             this.Geometry = new Line(start, end);
         }
+        public Cable(Line line)
+        {
+            this.Geometry = line;
+        }
 
-        public void SetData (Transaction tr, Document doc, Boolean[] data)
+        public void SetData(Transaction tr, Document doc, Boolean[] data)
         {
             DictionaryManager dman = new DictionaryManager();
-            //Abrimos el diccionario de extension de la entidad
+            //Abrimos el diccionario de extensión de la entidad
             ObjectId idDic = dman.GetExtensionD(tr, doc, this.Geometry);
-
             dman.SetData(idDic, tr, "data", data.Select(x => x ? "1" : "0").ToArray());
         }
 
@@ -36,11 +39,24 @@ namespace AutoCADAPI.Lab3
             return dman.GetData(idDic, tr, "data").Select(x => x == "1").ToArray();
         }
 
-        public static Cable InsertCable(Point3d start, Point3d end, Drawer dr)
+        public static Cable InsertCable(Point3d start, Point3d end, Drawer d)
         {
-            Cable cable = new Cable(start, end);
-            dr.Entity(cable.Geometry);
-            return cable;
+            Cable c = new Cable(start, end);
+            d.Entity(c.Geometry);
+            return c;
         }
+        /// <summary>
+        /// Searches the specified start.
+        /// </summary>
+        /// <param name="start">if set to <c>true</c> [start].</param>
+        /// <returns></returns>
+        public ObjectIdCollection Search(Boolean start = false)
+        {
+            Point3d search = start ? this.Geometry.StartPoint : this.Geometry.EndPoint;
+            ObjectIdCollection ids = search.Select();
+            ids.Remove(this.Geometry.Id);
+            return ids;
+        }
+
     }
 }

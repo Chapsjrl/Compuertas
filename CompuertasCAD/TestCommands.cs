@@ -34,7 +34,7 @@ namespace AutoCADAPI.Lab3
             if (Selector.Point("Selecciona el punto de inserción de la compuerta", out pt))
             {
                 TransactionWrapper tr = new TransactionWrapper();
-                var cmp = tr.Run(InsertCompuertaTask, new AND(), pt) as Compuerta;
+                var cmp = tr.Run(InsertCompuertaTask, new OR(), pt) as Compuerta;
                 Compuertas.Add(cmp.Id, cmp);
             }
         }
@@ -139,6 +139,138 @@ namespace AutoCADAPI.Lab3
             }
             return null;
         }
-        
+        /// <summary>
+        /// Realiza el calculo de una compuerta
+        /// </summary>
+        [CommandMethod("TestCompuerta")]
+        public void TestCompuerta()
+        {
+            ObjectId p1Id, p2Id, cmpId;
+            Point3d pt1, pt2;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            if (Selector.Entity("\nSelecciona un pulso", typeof(Polyline), out p1Id) &&
+                Selector.Entity("\nSelecciona la entrada de conexión", out cmpId, out pt1) &&
+                Selector.Entity("\nSelecciona un pulso", typeof(Polyline), out p2Id) &&
+                Selector.Entity("\nSelecciona la entrada de conexión", out cmpId, out pt2))
+            {
+                TransactionWrapper tr = new TransactionWrapper();
+                Compuerta cmp = this.Compuertas.Values.FirstOrDefault(x => x.Block.Id == cmpId);
+                if (cmp != null)
+                    tr.Run(TestCompuertaTask, cmp, p1Id, p2Id, pt1, pt2);
+                else
+                    ed.WriteMessage("No es Compuerta");
+            }
+        }
+
+        private object TestCompuertaTask(Document doc, Transaction tr, object[] input)
+        {
+            Compuerta cmp = (Compuerta)input[0];
+            cmp.InitBox();
+            Polyline p1 = ((ObjectId)input[1]).GetObject(OpenMode.ForRead) as Polyline;
+            Polyline p2 = ((ObjectId)input[2]).GetObject(OpenMode.ForRead) as Polyline;
+            Point3d pt1 = (Point3d)input[3];
+            Point3d pt2 = (Point3d)input[4];
+            String zoneA, zoneB;
+            //No nos interesa en este ejemplo las coordenadas
+            Point3dCollection zone;
+            cmp.GetZone(pt1, out zoneA, out zone);
+            cmp.GetZone(pt2, out zoneB, out zone);
+            InputValue inA = new InputValue() { Name = zoneA, Value = Pulso.GetValues(p1) },
+                       inB = new InputValue() { Name = zoneB, Value = Pulso.GetValues(p2) };
+            Boolean[] result = cmp.Solve(inA, inB);
+            Drawer d = new Drawer(tr);
+            Point3d pt;
+            if (Selector.Point("Selecciona el punto de inserción de la salida", out pt))
+            {
+                Pulso p = new Pulso(pt, result);
+                p.Draw(d);
+                Line lA = new Line(p1.EndPoint, cmp.ConnectionPoints[inA.Name]),
+                    lB = new Line(p2.EndPoint, cmp.ConnectionPoints[inB.Name]),
+                    lO = new Line(pt, cmp.ConnectionPoints["OUTPUT"]);
+                d.Entities(lA, lB, lO);
+                cmp.SetData(tr, doc, inA.Value.LastOrDefault(), inB.Value.LastOrDefault());
+            }
+            return null;
+        }
+
+        [CommandMethod("TestCompuertaCable")]
+        public void ChecarCables()
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ObjectId compId;
+            if (Selector.Entity("Selecciona una compuerta", out compId))
+            {
+                Compuerta cmp = this.Compuertas.FirstOrDefault(x => x.Value.Block.ObjectId == compId).Value;
+                cmp.InitBox();
+                ObjectId cableAId = cmp.Search("INPUTA").OfType<ObjectId>().FirstOrDefault(),
+                         cableBId = cmp.Search("INPUTB").OfType<ObjectId>().FirstOrDefault();
+                TransactionWrapper tr = new TransactionWrapper();
+                tr.Run(TestConnectionTask, cmp, cableAId, cableBId);
+            }
+        }
+        /// <summary>
+        /// Tests the connection task.
+        /// </summary>
+        /// <param name="doc">The document.</param>
+        /// <param name="tr">The tr.</param>
+        /// <param name="input">The input.</param>
+        private object TestConnectionTask(Document doc, Transaction tr, object[] input)
+        {
+            Compuerta cmp = input[0] as Compuerta;
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            if (((ObjectId)input[1]).IsValid && ((ObjectId)input[2]).IsValid)
+            {
+                DBObject cableA = ((ObjectId)input[1]).GetObject(OpenMode.ForRead);
+                DBObject cableB = ((ObjectId)input[2]).GetObject(OpenMode.ForRead);
+                if (cableA is Line && cableB is Line)
+                {
+                    Cable cabA = new Cable(cableA as Line),
+                          cabB = new Cable(cableB as Line);
+                    ObjectId pAId = cabA.Search(true).OfType<ObjectId>().FirstOrDefault(),
+                             pBId = cabB.Search(true).OfType<ObjectId>().FirstOrDefault();
+                    if (pAId.IsValid && pBId.IsValid)
+                    {
+                        DBObject pulsoA = pAId.GetObject(OpenMode.ForRead),
+                             pulsoB = pBId.GetObject(OpenMode.ForRead);
+                        if (pulsoA is Polyline && pulsoB is Polyline)
+                        {
+                            var inputA = Pulso.GetValues(pulsoA as Polyline);
+                            var inputB = Pulso.GetValues(pulsoB as Polyline);
+                            bool[] result = cmp.Solve(
+                                new InputValue[]
+                                {
+                            new InputValue() { Name = "INPUTA", Value = inputA },
+                            new InputValue() { Name = "INPUTB", Value = inputB }
+                                });
+                            Drawer d = new Drawer(tr);
+                            Pulso output = new Pulso(cmp.ConnectionPoints["OUTPUT"], result);
+                            output.Draw(d);
+                        }
+                    }
+                    if (pAId.IsNull)
+                        ed.WriteMessage("No se encontro un pulso conectado al cable A");
+                    if (pBId.IsNull)
+                        ed.WriteMessage("No se encontro un pulso conectado al cable B");
+                }
+            }
+            if (((ObjectId)input[1]).IsNull)
+                ed.WriteMessage("\nCable A desconectado");
+            if (((ObjectId)input[2]).IsNull)
+                ed.WriteMessage("\nCable B desconectado");
+
+            return null;
+        }
     }
+
+    public abstract class test
+    {
+        public abstract PromptSelectionResult SelectAll();
+        public abstract PromptSelectionResult SelectCrossingPolygon(Point3dCollection polygon);
+        public abstract PromptSelectionResult SelectCrossingWindow(Point3d pt1, Point3d pt2);
+        public abstract PromptSelectionResult SelectFence(Point3dCollection fence);
+        public abstract PromptSelectionResult SelectWindow(Point3d pt1, Point3d pt2);
+        public abstract PromptSelectionResult SelectWindowPolygon(Point3dCollection polygon);
+
+    }
+
 }
