@@ -324,6 +324,7 @@ namespace AutoCADAPI.Lab3
 
         }
 
+
         [CommandMethod("PulsoTrueStart")]
         public void PulsoTStart()
         {
