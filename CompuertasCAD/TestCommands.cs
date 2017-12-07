@@ -142,7 +142,7 @@ namespace AutoCADAPI.Lab3
         /// <summary>
         /// Realiza el calculo de una compuerta
         /// </summary>
-        [CommandMethod("TestCompuerta")]
+        //[CommandMethod("TestCompuerta")]
         public void TestCompuerta()
         {
             ObjectId p1Id, p2Id, cmpId;

@@ -157,7 +157,7 @@ namespace AutoCADAPI.Lab3
             }
         }
         /// <summary>
-        /// Define un comando que prueba la inserción de la compuerta NOR
+        /// Define un comando que prueba la inserción de la compuerta NOT
         /// </summary>
         [CommandMethod("InsertNOT")]
         public void InsertNOT()
@@ -172,6 +172,19 @@ namespace AutoCADAPI.Lab3
                 Compuertas.Add(cmp.Id, cmp);
             }
         }
+        ///// <summary>
+        ///// Define un comando para la inserción de un pulso de tamaño y valor true (Vcc)
+        ///// </summary>
+        //[CommandMethod("DibujaVcc")]
+        //public void InsertVcc()
+        //{
+        //    Point3d insPt;
+        //    if (Selector.Point("Selecciona el punto de inserción de Vcc", out insPt))
+        //    {
+        //        Boolean vcc = true;
+        //        Pulso p = new Pulso(insPt, vcc);
+        //    }
+        //}
         /// <summary>
         /// Define la transacción que inserta una compuerta
         /// </summary>
@@ -189,7 +202,7 @@ namespace AutoCADAPI.Lab3
         /// <summary>
         /// Realiza el calculo de una compuerta
         /// </summary>
-        //[CommandMethod("TestCompuerta")]
+        [CommandMethod("TestCompuerta")]
         public void TestCompuerta()
         {
             ObjectId p1Id, p2Id, cmpId;
@@ -240,10 +253,7 @@ namespace AutoCADAPI.Lab3
             return null;
         }
 
-
-
-
-
+        
         [CommandMethod("DibujarPulso")]
         public void DPulso()
         {
