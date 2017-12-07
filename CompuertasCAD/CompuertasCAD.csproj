@@ -94,6 +94,12 @@
     <Compile Include="UI\CompuertasUI.Designer.cs">
       <DependentUpon>CompuertasUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\FuentesUI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\FuentesUI.Designer.cs">
+      <DependentUpon>FuentesUI.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -102,6 +108,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\CompuertasUI.resx">
       <DependentUpon>CompuertasUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\FuentesUI.resx">
+      <DependentUpon>FuentesUI.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

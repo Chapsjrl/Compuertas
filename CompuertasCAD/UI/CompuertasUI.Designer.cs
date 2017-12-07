@@ -42,7 +42,7 @@
             // 
             this.OR.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.OR.Image = ((System.Drawing.Image)(resources.GetObject("OR.Image")));
-            this.OR.Location = new System.Drawing.Point(19, 27);
+            this.OR.Location = new System.Drawing.Point(28, 27);
             this.OR.Name = "OR";
             this.OR.Size = new System.Drawing.Size(172, 105);
             this.OR.TabIndex = 0;
@@ -53,7 +53,7 @@
             // 
             this.AND.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.AND.Image = ((System.Drawing.Image)(resources.GetObject("AND.Image")));
-            this.AND.Location = new System.Drawing.Point(19, 138);
+            this.AND.Location = new System.Drawing.Point(28, 138);
             this.AND.Name = "AND";
             this.AND.Size = new System.Drawing.Size(172, 105);
             this.AND.TabIndex = 1;
@@ -64,7 +64,7 @@
             // 
             this.NOR.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.NOR.Image = ((System.Drawing.Image)(resources.GetObject("NOR.Image")));
-            this.NOR.Location = new System.Drawing.Point(19, 249);
+            this.NOR.Location = new System.Drawing.Point(28, 249);
             this.NOR.Name = "NOR";
             this.NOR.Size = new System.Drawing.Size(172, 105);
             this.NOR.TabIndex = 2;
@@ -75,7 +75,7 @@
             // 
             this.NAND.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.NAND.Image = ((System.Drawing.Image)(resources.GetObject("NAND.Image")));
-            this.NAND.Location = new System.Drawing.Point(19, 360);
+            this.NAND.Location = new System.Drawing.Point(28, 360);
             this.NAND.Name = "NAND";
             this.NAND.Size = new System.Drawing.Size(172, 105);
             this.NAND.TabIndex = 3;
@@ -86,7 +86,7 @@
             // 
             this.XOR.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.XOR.Image = ((System.Drawing.Image)(resources.GetObject("XOR.Image")));
-            this.XOR.Location = new System.Drawing.Point(19, 471);
+            this.XOR.Location = new System.Drawing.Point(28, 471);
             this.XOR.Name = "XOR";
             this.XOR.Size = new System.Drawing.Size(172, 105);
             this.XOR.TabIndex = 4;
@@ -97,7 +97,7 @@
             // 
             this.XNOR.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.XNOR.Image = ((System.Drawing.Image)(resources.GetObject("XNOR.Image")));
-            this.XNOR.Location = new System.Drawing.Point(19, 693);
+            this.XNOR.Location = new System.Drawing.Point(28, 693);
             this.XNOR.Name = "XNOR";
             this.XNOR.Size = new System.Drawing.Size(172, 105);
             this.XNOR.TabIndex = 5;
@@ -108,7 +108,7 @@
             // 
             this.NOT.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.NOT.Image = ((System.Drawing.Image)(resources.GetObject("NOT.Image")));
-            this.NOT.Location = new System.Drawing.Point(19, 582);
+            this.NOT.Location = new System.Drawing.Point(28, 582);
             this.NOT.Name = "NOT";
             this.NOT.Size = new System.Drawing.Size(172, 105);
             this.NOT.TabIndex = 6;
@@ -127,7 +127,7 @@
             this.Controls.Add(this.AND);
             this.Controls.Add(this.OR);
             this.Name = "CompuertasUI";
-            this.Size = new System.Drawing.Size(275, 750);
+            this.Size = new System.Drawing.Size(275, 713);
             this.ResumeLayout(false);
 
         }

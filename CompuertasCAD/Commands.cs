@@ -20,6 +20,7 @@ namespace AutoCADAPI.Lab3
     {
         PaletteSet compuertasSet;
         public static CompuertasUI myControlCompuertas;
+        public static FuentesUI myControlFuentes;
         
         [CommandMethod("TestInitUI")]
         public void TestUI()
@@ -27,8 +28,10 @@ namespace AutoCADAPI.Lab3
             //inicializa la interfaz
             compuertasSet = new PaletteSet("Compuertas");
             myControlCompuertas = new CompuertasUI();
+            myControlFuentes = new FuentesUI();
             compuertasSet.Add("Galería", myControlCompuertas);
             compuertasSet.Dock = DockSides.Left;
+            compuertasSet.Add("Entradas", myControlFuentes);
             compuertasSet.Visible = true;
         } 
 
@@ -172,19 +175,19 @@ namespace AutoCADAPI.Lab3
                 Compuertas.Add(cmp.Id, cmp);
             }
         }
-        ///// <summary>
-        ///// Define un comando para la inserción de un pulso de tamaño y valor true (Vcc)
-        ///// </summary>
-        //[CommandMethod("DibujaVcc")]
-        //public void InsertVcc()
-        //{
-        //    Point3d insPt;
-        //    if (Selector.Point("Selecciona el punto de inserción de Vcc", out insPt))
-        //    {
-        //        Boolean vcc = true;
-        //        Pulso p = new Pulso(insPt, vcc);
-        //    }
-        //}
+        /// <summary>
+        /// Define un comando para la inserción de un pulso de tamaño y valor true (Vcc)
+        /// </summary>
+        [CommandMethod("DibujaVcc")]
+        public void InsertVcc()
+        {
+            Point3d insPt;
+            if (Selector.Point("Selecciona el punto de inserción de Vcc", out insPt))
+            {
+                Boolean vcc = true;
+                
+            }
+        }
         /// <summary>
         /// Define la transacción que inserta una compuerta
         /// </summary>
@@ -254,7 +257,7 @@ namespace AutoCADAPI.Lab3
         }
 
         
-        [CommandMethod("DibujarPulso")]
+        [CommandMethod("PulsoRandom")]
         public void DPulso()
         {
             Point3d insPt;
@@ -281,6 +284,73 @@ namespace AutoCADAPI.Lab3
                 Boolean[] input = new Boolean[pulsoSize];
                 for (int i = 0; i < input.Length; i++)
                     input[i] = data[r.Next(data.Length - 1)];
+                Pulso p = new Pulso(insPt, input);
+                TransactionWrapper tr = new TransactionWrapper();
+                tr.Run(DPulsoTask, new Object[] { p });
+            }
+
+        }
+
+        [CommandMethod("PulsoFalseStart")]
+        public void PulsoFStart()
+        {
+            Point3d insPt;
+            Boolean[] data = new Boolean[]
+            {
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true,
+                false, true, false, true, false, true, false, true
+            };
+            int pulsoSize;
+            if (Selector.Point("Selecciona el punto de inserción del pulso", out insPt) &&
+                Selector.Integer("El tamaño del pulso", out pulsoSize, 4))
+            {
+                Boolean[] input = new Boolean[pulsoSize];
+                for (int i = 0; i < input.Length; i++)
+                    input[i] = data[i];
+                Pulso p = new Pulso(insPt, input);
+                TransactionWrapper tr = new TransactionWrapper();
+                tr.Run(DPulsoTask, new Object[] { p });
+            }
+
+        }
+
+        [CommandMethod("PulsoTrueStart")]
+        public void PulsoTStart()
+        {
+            Point3d insPt;
+            Boolean[] data = new Boolean[]
+            {
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                true, false, true, false, true, false, true, false,
+                false, true, false, true, false, true, false, true
+            };
+            int pulsoSize;
+            if (Selector.Point("Selecciona el punto de inserción del pulso", out insPt) &&
+                Selector.Integer("El tamaño del pulso", out pulsoSize, 4))
+            {
+                Boolean[] input = new Boolean[pulsoSize];
+                for (int i = 0; i < input.Length; i++)
+                    input[i] = data[i];
                 Pulso p = new Pulso(insPt, input);
                 TransactionWrapper tr = new TransactionWrapper();
                 tr.Run(DPulsoTask, new Object[] { p });
